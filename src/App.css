@@ -1,0 +1,130 @@
+.App {
+  text-align: center;
+}
+
+#canvas {
+  background-color: rgba(19, 73, 89, 0.7);
+}
+
+table {
+  width: 1000px;
+  margin-top: 40px;
+  border: 1px solid #c1c1c1;
+  border-spacing: 0;
+  border-collapse: collapse
+}
+th,
+td {
+  width: calc(100%/7);
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #c1c1c1
+}
+th { background: #efefef }
+
+.cp_ipselect {
+	overflow: hidden;
+	width: 90%;
+	text-align: center;
+}
+.cp_ipselect select {
+	width: 100%;
+	padding-right: 1em;
+	cursor: pointer;
+	text-indent: 0.01px;
+	text-overflow: ellipsis;
+	border: none;
+	outline: none;
+	background: transparent;
+	background-image: none;
+	box-shadow: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+.cp_ipselect select::-ms-expand {
+    display: none;
+}
+.cp_ipselect.cp_sl01 {
+	position: relative;
+	border: 1px solid #bbbbbb;
+	border-radius: 2px;
+	background: #ffffff;
+}
+.cp_ipselect.cp_sl01::before {
+	position: absolute;
+	top: 0.8em;
+	right: 0.9em;
+	width: 0;
+	height: 0;
+	padding: 0;
+	content: '';
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 6px solid #666666;
+	pointer-events: none;
+}
+.cp_ipselect.cp_sl01 select {
+	padding: 8px 3px 8px 8px;
+	color: #666666;
+}
+
+textarea {
+  outline: none;
+  border: none;
+  background: #f4f6f9;
+}
+
+.text-title {
+  font-size: 110%;
+}
+
+.sub-title {
+  font-size: 100%;
+}
+
+li, ol, ul {
+  width: calc(100%/2);
+  list-style: none;
+}
+
+.title_col {
+  display: flex;
+  align-items: center;
+}
+
+.title_date {
+  width: 200px;
+}
+
+
+.on-off-btn_wrap{
+    display:inline-block;
+    position: relative;
+}
+.on-off-btn_wrap input{
+    opacity: 0;
+    position: absolute;
+    left: 0;
+}
+.on-off-btn_wrap label{
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: #eee;
+    display: inline-block;
+    cursor: pointer;
+    transition: .5s;
+}
+.on-off-btn_wrap label:hover,
+.on-off-btn_wrap input:checked + label{
+    background: #af975e;
+    color: #FFF;
+}
+.on-off-btn_wrap input:focus + label{
+    box-shadow: 0 0 4px #af975e;
+}
+
+.disp-state-btn-item {
+  margin:0px 5px;
+  display: inline-block;
+  _display: inline;
+}
