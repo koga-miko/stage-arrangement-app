@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/stage-arrangement-app/static/css/main.67d27cdc.css",
+    "main.js": "/stage-arrangement-app/static/js/main.58e818f6.js",
+    "static/media/piano.png": "/stage-arrangement-app/static/media/piano.af216e8ff0950c88ce1e.png",
+    "index.html": "/stage-arrangement-app/index.html",
+    "main.67d27cdc.css.map": "/stage-arrangement-app/static/css/main.67d27cdc.css.map",
+    "main.58e818f6.js.map": "/stage-arrangement-app/static/js/main.58e818f6.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.67d27cdc.css",
+    "static/js/main.58e818f6.js"
+  ]
+}
