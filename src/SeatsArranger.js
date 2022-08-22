@@ -201,6 +201,7 @@ class SeatsArranger {
         // 座席のグループごとの席数抽出
         this.seats2D.flat().filter(seat=>{ return seat.isExistence()}).forEach(seat=>{
             numInfo.numOfSeats[seat.groupId] = numInfo.numOfSeats[seat.groupId] === undefined? 1: numInfo.numOfSeats[seat.groupId]+1
+            numInfo.numOfSeats.all = numInfo.numOfSeats.all === undefined? 1: numInfo.numOfSeats.all+1
         })
 
         // 譜面台のグループごとの個数抽出
@@ -209,6 +210,7 @@ class SeatsArranger {
                 if (musicStand.isExistence()) {
                     const groupId = this.seats2D[row][Math.floor(col / 2)].groupId
                     numInfo.numOfStands[groupId] = numInfo.numOfStands[groupId] === undefined? 1: numInfo.numOfStands[groupId]+1
+                    numInfo.numOfStands.all = numInfo.numOfStands.all === undefined? 1: numInfo.numOfStands.all+1
                 }
             })
         })

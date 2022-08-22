@@ -187,6 +187,7 @@ const App = () => {
               <th>Va</th>
               <th>Vc</th>
               <th>Cb</th>
+              <th>合計</th>
             </tr>
           </thead>
           <tbody>
@@ -198,6 +199,7 @@ const App = () => {
               <td>{RenderIdSelect(IdSelIdx.Va)}</td>
               <td>{RenderIdSelect(IdSelIdx.Vc)}</td>
               <td>10</td>
+              <td>-</td>
             </tr>
             <tr>
               <th>座席数</th>
@@ -207,6 +209,7 @@ const App = () => {
               <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Va]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vc]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfSeats[10]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfSeats.all}</td>
             </tr>
             <tr>
               <th>譜面台個数</th>
@@ -216,6 +219,7 @@ const App = () => {
               <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Va]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Vc]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfStands[10]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfStands.all}</td>
             </tr>
           </tbody>
         </table>
