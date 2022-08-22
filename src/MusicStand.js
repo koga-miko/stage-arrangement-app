@@ -81,6 +81,14 @@ class MusicStand extends PartsAction {
         this.y = this.y + y
     }
 
+    getActDispPoints() {
+        return {
+            visible:this.state !== this.State.Hide,
+            staPos: { x:this.x - this.width / 2, y:this.y - this.width / 2},
+            endPos: { x:this.x + this.width / 2, y:this.y + this.width / 2},
+        }
+    }
+
     isHit(x, y) {
         if ((this.x - this.width / 2) <= x && x < (this.x + this.width / 2) && (this.y - this.width / 2) <= y && y < (this.y + this.width / 2)) {
             return true

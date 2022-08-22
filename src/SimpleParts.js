@@ -61,6 +61,14 @@ class SimpleParts extends PartsAction {
         return [this.x, this.y]
     }
 
+    getActDispPoints() {
+        return {
+            visible:this.visible,
+            staPos: { x:this.x, y:this.y},
+            endPos: { x:this.x + this.w, y:this.y + this.h},
+        }
+    }
+
     isHit(x, y) {
        if (this.visible && this.x <= x && x < this.x + this.w && this.y <= y && y < this.y + this.h) {
            return true

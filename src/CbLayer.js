@@ -126,6 +126,20 @@ class CbLayer {
         return this.centerPos
     }
 
+    getActDispPoints() {
+        const ret = {}
+        this.cbSeats.forEach(cbSeat=>{
+            ret[visible] = ret[visible] 
+        })
+        
+        // TODO: このへんでArray.reduce()で結果集約
+        return {
+            visible: this.visible,
+            staPos: { },//T.B.D
+            endPos: { x:this.x + this.width / 2, y:this.y + this.width / 2},
+        }
+    }
+
     isHit(x, y) {
         if (this.visible === false) {
             return false

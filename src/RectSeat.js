@@ -75,6 +75,14 @@ class RectSeat extends PartsAction {
         return [this.x + this.w / 2, this.y + this.h / 2]
     }
 
+    getActDispPoints() {
+        return {
+            visible:this.visualState !== SeatVisualState.Hide,
+            staPos: { x:this.x, y:this.y},
+            endPos: { x:this.x + this.w, y:this.y + this.h},
+        }
+    }
+
     isHit(x, y) {
         if (this.x <= x && x < (this.x + this.w) && this.y <= y && y < (this.y + this.h)) {
             return true
