@@ -1,8 +1,6 @@
 import './App.css'
 import React, {useEffect, useRef, useState} from 'react'
-import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-import moment from 'moment'
 import SeatsArranger from './SeatsArranger'
 import {seatsInfo} from './data'
 
@@ -39,7 +37,6 @@ const App = () => {
   const [dispInfo, setDispInfo] = useState(null)
   const [selectedValues, setSelectedValues] = useState(Array(IdSelIdx.MaxVal).fill(0))
   const [dispStates, setDispStates] = useState(Array(DispStateIdx.MaxVal).fill(false))
-  const [startDate, setStartDate] = useState(toUtcIso8601str(moment()))
   useEffect(()=>{
     const canvas = canvasRef.current
     const ctx = canvas.getContext("2d")
@@ -75,9 +72,10 @@ const App = () => {
       newDispStates[DispStateIdx.PrintMode] = false
       setDispStates(newDispStates)
       seatsArrangerRef.current.setPrintingMode(newDispStates[DispStateIdx.PrintMode])
-    }
-    const rect = canvasRef.current.getBoundingClientRect()
-    seatsArrangerRef.current.onMouseDown(x - rect.x, y - rect.y, event)
+    } else {
+      const rect = canvasRef.current.getBoundingClientRect()
+      seatsArrangerRef.current.onMouseDown(x - rect.x, y - rect.y, event)
+      }
   }
 
   const onMouseMove = (x, y, event) => {
@@ -95,12 +93,6 @@ const App = () => {
   }
 
   const onKeyDown = (event)=> {
-    if (dispStates[DispStateIdx.PrintMode] === true) {
-      const newDispStates = dispStates.slice()
-      newDispStates[DispStateIdx.PrintMode] = false
-      setDispStates(newDispStates)
-      seatsArrangerRef.current.setPrintingMode(newDispStates[DispStateIdx.PrintMode])
-    }
     seatsArrangerRef.current.onKeyDown(event)
   }
 
@@ -108,9 +100,6 @@ const App = () => {
     seatsArrangerRef.current.onKeyUp(event)
   }
 
-  const handleDateChange = (selectedDate) => {
-    setStartDate(toUtcIso8601str(moment(selectedDate)))
-  }
   const handleSelectChange = (e, idSelIdx) => {
     const newSelectedValues = selectedValues.slice()
     newSelectedValues[idSelIdx] = e.target.value
@@ -231,22 +220,6 @@ const App = () => {
   return (
     <div>
       <h1>
-        {/* <ul className="title_col">
-          <li className="title_date">
-              <DatePicker
-                selected={moment(startDate).toDate()}
-                onChange={handleDateChange}
-                customInput={
-                <div>
-                  {parseAsMoment(startDate).format('YYYY/MM/DD')}
-                </div>
-                }
-              />
-          </li>
-          <li>
-            <textarea rows={1} cols={50} className="text-title" />
-          </li>
-        </ul> */}
         <textarea rows={1} cols={50} className="text-title" /><br/>
         <textarea rows={1} cols={50} className="sub-title" /><br/>
         <textarea rows={2} cols={100} className="text-comment" />
@@ -272,27 +245,6 @@ const App = () => {
       {renderTableDisp()}
     </div>
   )
-}
-
-/**
- * JST基準に変換して返す
- * @param {string} dateTimeStr YYYY-MM-DDTHH:mm:00Z
- * @returns {moment.Moment}
- */
-const parseAsMoment = (dateTimeStr) => {
-  return moment.utc(dateTimeStr, 'YYYY-MM-DDTHH:mm:00Z', 'ja').utcOffset(9)
-}
-
-/**
- * 日付形式に変換して返す
- * @param {moment.Moment} momentInstance
- * @returns {string}
- */
-const toUtcIso8601str = (momentInstance) => {
-  return momentInstance
-      .clone()
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:00Z')
 }
 
 export default App

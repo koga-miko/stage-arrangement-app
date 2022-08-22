@@ -127,7 +127,7 @@ class CbLayer {
     }
 
     getActDispPoints() {
-        const ret = {visible:false}
+        let ret = {visible:false}
         this.cbSeats.forEach(cbSeat=>{
             const curr = cbSeat.getActDispPoints()
             if (curr.visible) {
