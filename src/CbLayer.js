@@ -127,9 +127,19 @@ class CbLayer {
     }
 
     getActDispPoints() {
-        const ret = {}
+        const ret = {visible:false}
         this.cbSeats.forEach(cbSeat=>{
-            ret[visible] = ret[visible] 
+            const curr = cbSeat.getActDispPoints()
+            if (curr.visible) {
+                if (ret.visible) {
+                    ret.staPos.x = Math.min(ret.staPox.x, curr.staPox.x)
+                    ret.staPos.y = Math.min(ret.staPox.y, curr.staPox.y)
+                    ret.endPos.x = Math.max(ret.endPox.x, curr.endPox.x)
+                    ret.endPos.y = Math.max(ret.endPox.y, curr.endPox.y)
+                } else {
+                    ret = curr
+                }
+            }
         })
         
         // TODO: このへんでArray.reduce()で結果集約
