@@ -2,7 +2,7 @@ import './App.css'
 import React, {useEffect, useRef, useState} from 'react'
 import "react-datepicker/dist/react-datepicker.css"
 import SeatsArranger from './SeatsArranger'
-import {seatsInfo} from './data'
+import {canvasInfo, seatsInfo} from './data'
 
 const IdSelIdx = {
   Vn1: 0,
@@ -114,19 +114,26 @@ const App = () => {
   }
 
   const RenderIdSelect = (idSelIdx) => {
+    //TODO:初期値を設定できるようにすること
+    const defaultValue = {
+      label: selectedValues[idSelIdx]===0? '-': selectedValues[idSelIdx].toString(),
+      value: selectedValues[idSelIdx]===0? '': selectedValues[idSelIdx].toString()
+    }
     return (
       <div className="cp_ipselect cp_sl01">
-        <select onChange={(e) => handleSelectChange(e, idSelIdx)}>
-          <option value="">-</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
+        <select 
+          onChange={(e) => handleSelectChange(e, idSelIdx)}
+          defaultValue={defaultValue}>
+            <option value="">-</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
         </select>
       </div>
     )
@@ -232,8 +239,8 @@ const App = () => {
           onKeyDown={(event)=>onKeyDown(event)}
           onKeyUp={(event)=>onKeyUp(event)}
           ref={canvasRef}
-          height="900"
-          width="1800"
+          height={canvasInfo.h}
+          width={canvasInfo.w}
         />
       </div>
       {renderDispStateChecks()}

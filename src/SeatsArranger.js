@@ -36,6 +36,7 @@ class SeatsArranger {
         this.cbLayer = new CbLayer(cbLayerInfo, SeatsArranger.cbGroupId, ()=>this.update("CbLayer"))
         this.simplePartsList = []
         this.printing = false
+        this.printingBefore1stDraw = false
         this.printingArea = null
         this.printingImg = null
         this.historyManager = new HistoryManager(dataObj => {
@@ -201,34 +202,36 @@ class SeatsArranger {
     }
 
     setPrintingMode(printing) {
-        const margin = 10
         this.printing = printing
         if (this.printing) {
-            const actDispPoints = this.getActDispPoints()
-            if (actDispPoints.visible) {
-                // マージンぶんを加味して対象領域を抽出
-                actDispPoints.staPos.x = Math.max(0, actDispPoints.staPos.x - margin)
-                actDispPoints.staPos.y = Math.max(0, actDispPoints.staPos.y - margin)
-                actDispPoints.endPos.x = Math.min(this.canvas.width, actDispPoints.endPos.x + margin)
-                actDispPoints.endPos.y = Math.min(this.canvas.height, actDispPoints.endPos.y + margin)
-                // X,Y,W,H抽出
-                const x = actDispPoints.staPos.x
-                const y = actDispPoints.staPos.y
-                const w = actDispPoints.endPos.x - actDispPoints.staPos.x
-                const h = actDispPoints.endPos.y - actDispPoints.staPos.y
-                // キャンバスよりも横長
-                // if (w / h > this.canvas.width / this.canvas.height) {
-
-                // }
-                this.printingArea = { x:x, y:y, w:w, h:h }
-                const img = new Image()
-                img.src = this.canvas.toDataURL()
-                img.onload = ()=>{
-                    this.printingImg = img
-                }
-            }
+            this.printingImg = null
+            this.printingBefore1stDraw = false
         } else {
             this.printingImg = null
+        }
+    }
+
+    makePrintingImg() {
+        const margin = 10
+        const actDispPoints = this.getActDispPoints()
+        if (actDispPoints.visible) {
+            // マージンぶんを加味して対象領域を抽出
+            actDispPoints.staPos.x = Math.max(0, actDispPoints.staPos.x - margin)
+            actDispPoints.staPos.y = Math.max(0, actDispPoints.staPos.y - margin)
+            actDispPoints.endPos.x = Math.min(this.canvas.width, actDispPoints.endPos.x + margin)
+            actDispPoints.endPos.y = Math.min(this.canvas.height, actDispPoints.endPos.y + margin)
+            // w,y,w,h形式へ変換
+            this.printingArea = {
+                x:actDispPoints.staPos.x,
+                y:actDispPoints.staPos.y,
+                w:actDispPoints.endPos.x - actDispPoints.staPos.x,
+                h:actDispPoints.endPos.y - actDispPoints.staPos.y
+            }
+            const img = new Image()
+            img.src = this.canvas.toDataURL()
+            img.onload = ()=>{
+                this.printingImg = img
+            }
         }
     }
 
@@ -275,7 +278,7 @@ class SeatsArranger {
         return mergeActDispPoints([
             this.seats2D,
             this.musicStands2D,
-            this.cbLayer.cbSeats,
+            [this.cbLayer],
             this.simplePartsList])
     }
 
@@ -555,8 +558,8 @@ class SeatsArranger {
                 this.printingArea.h,
                 0,
                 0,
-                this.canvas.width,
-                this.canvas.height
+                this.printingArea.w / this.printingArea.h > this.canvas.width / this.canvas.height ? this.printingArea.w * this.canvas.width / this.printingArea.w: this.printingArea.w * this.canvas.height / this.printingArea.h,
+                this.printingArea.w / this.printingArea.h > this.canvas.width / this.canvas.height ? this.printingArea.h * this.canvas.width / this.printingArea.w: this.printingArea.h * this.canvas.height / this.printingArea.h
             )
             return
         }
@@ -590,6 +593,10 @@ class SeatsArranger {
         // 矩形選択ありなら矩形選択領域を表示
         if (this.selecting === true) {
             this.drawSelRect(ctx, this.printing)
+        }
+        if (this.printing && !this.printingBefore1stDraw) {
+            this.printingBefore1stDraw = true
+            this.makePrintingImg()
         }
     }
     drawTact(ctx, printing = false) {

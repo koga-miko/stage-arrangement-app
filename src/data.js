@@ -1,5 +1,10 @@
 import piano_image from "./images/piano.png"
 
+export const canvasInfo = {
+    w: 1800,
+    h: 900,
+}
+
 export const seatsArrangerInfo = {
     distToStand: 40,
     tactWH: {

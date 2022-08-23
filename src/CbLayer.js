@@ -133,7 +133,10 @@ class CbLayer {
     }
 
     getActDispPoints() {
-        return mergeActDispPoints(this.cbSeats)
+        if (this.visible) {
+            return mergeActDispPoints(this.cbSeats)
+        }
+        return {visible:false}
     }
 
     isHit(x, y) {
