@@ -107,6 +107,18 @@ class RectSeat extends PartsAction {
         return active
     }
 
+    hasPerson() {
+        let active = false
+        switch (this.visualState) {
+            case SeatVisualState.Normal:
+                active = true
+                break
+            default:
+                break
+        }
+        return active
+    }
+
     changedPartsActionState(state) {
         // 特になにもしない
     }

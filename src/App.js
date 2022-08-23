@@ -194,14 +194,34 @@ const App = () => {
               <td>-</td>
             </tr>
             <tr>
-              <th>座席数</th>
+              <th>標準の座席数</th>
               <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vn1]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vn2]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vn3]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Va]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vc]]}</td>
-              <td>{dispInfo===null?0:dispInfo.numOfSeats[10]}</td>
+              <td>0</td>
               <td>{dispInfo===null?0:dispInfo.numOfSeats.all}</td>
+            </tr>
+            <tr>
+              <th>ピアノ座席数</th>
+              <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Vn1]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Vn2]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Vn3]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Va]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Vc]]}</td>
+              <td>0</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPianoSeats.all}</td>
+            </tr>
+            <tr>
+              <th>人数</th>
+              <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Vn1]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Vn2]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Vn3]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Va]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Vc]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Cb]]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfPersons.all}</td>
             </tr>
             <tr>
               <th>譜面台個数</th>
@@ -210,7 +230,7 @@ const App = () => {
               <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Vn3]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Va]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Vc]]}</td>
-              <td>{dispInfo===null?0:dispInfo.numOfStands[10]}</td>
+              <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Cb]]}</td>
               <td>{dispInfo===null?0:dispInfo.numOfStands.all}</td>
             </tr>
           </tbody>

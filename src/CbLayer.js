@@ -158,8 +158,8 @@ class CbLayer {
         }
     }
 
-    getNumOfSeats() {
-        return this.visible? this.cbSeats.filter(cbSeat=>{ return cbSeat.isExistence()}).length: 0
+    getNumOfPersons() {
+        return this.visible? this.musicStands.filter(musicStand=>{ return musicStand.hasPerson()}).length: 0
     }
 
     getNumOfStands() {

@@ -130,6 +130,47 @@ class Seat extends PartsAction {
         return active
     }
 
+    isStandardSeat() {
+        let active = false
+        switch (this.visualState) {
+            case SeatVisualState.Normal:
+            case SeatVisualState.Red:
+            case SeatVisualState.Black:
+            case SeatVisualState.RedAndBlack:
+                active = true
+                break
+            default:
+                break
+        }
+        return active
+    }
+
+    isPianoSeat() {
+        let active = false
+        switch (this.visualState) {
+            case SeatVisualState.DoubleCircle:
+                active = true
+                break
+            default:
+                break
+        }
+        return active
+    }
+
+    hasPerson() {
+        let active = false
+        switch (this.visualState) {
+            case SeatVisualState.Normal:
+            case SeatVisualState.Red:
+            case SeatVisualState.DoubleCircle:
+                active = true
+                break
+            default:
+                break
+        }
+        return active
+    }
+
     changedPartsActionState(state) {
         // 特に何もしない
     }

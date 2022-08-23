@@ -246,11 +246,28 @@ class SeatsArranger {
 
     // {numOfSeats: {1:xxx, 2:xxx,...}, numOfStands: {1:xxx, 2:xxx,...} }
     getDispInfo() {
-        const numInfo = { numOfSeats:{}, numOfStands:{}}
-        // 座席のグループごとの席数抽出
-        this.seats2D.flat().filter(seat=>{ return seat.isExistence()}).forEach(seat=>{
+        const numInfo = { 
+            numOfSeats:{all:0, 1:0, 2:0, 3:0, 4:0, 5:0},
+            numOfStands:{all:0, 1:0, 2:0, 3:0, 4:0, 5:0},
+            numOfPianoSeats:{all:0, 1:0, 2:0, 3:0, 4:0, 5:0},
+            numOfPersons:{all:0, 1:0, 2:0, 3:0, 4:0, 5:0}
+        }
+        // 標準の座席のグループごとの席数抽出
+        this.seats2D.flat().filter(seat=>{ return seat.isStandardSeat()}).forEach(seat=>{
             numInfo.numOfSeats[seat.groupId] = numInfo.numOfSeats[seat.groupId] === undefined? 1: numInfo.numOfSeats[seat.groupId]+1
             numInfo.numOfSeats.all = numInfo.numOfSeats.all === undefined? 1: numInfo.numOfSeats.all + 1
+        })
+
+        // piano椅子のグループごとの席数抽出
+        this.seats2D.flat().filter(seat=>{ return seat.isPianoSeat()}).forEach(seat=>{
+            numInfo.numOfPianoSeats[seat.groupId] = numInfo.numOfPianoSeats[seat.groupId] === undefined? 1: numInfo.numOfPianoSeats[seat.groupId]+1
+            numInfo.numOfPianoSeats.all = numInfo.numOfPianoSeats.all === undefined? 1: numInfo.numOfPianoSeats.all + 1
+        })
+
+        // 人数のグループごとの席数抽出
+        this.seats2D.flat().filter(seat=>{ return seat.hasPerson()}).forEach(seat=>{
+            numInfo.numOfPersons[seat.groupId] = numInfo.numOfPersons[seat.groupId] === undefined? 1: numInfo.numOfPersons[seat.groupId]+1
+            numInfo.numOfPersons.all = numInfo.numOfPersons.all === undefined? 1: numInfo.numOfPersons.all + 1
         })
 
         // 譜面台のグループごとの個数抽出
@@ -264,9 +281,9 @@ class SeatsArranger {
             })
         })
         
-        // コントラバスの席数・個数の抽出
-        numInfo.numOfSeats[SeatsArranger.cbGroupId] = this.cbLayer.getNumOfSeats()
-        numInfo.numOfSeats.all = numInfo.numOfSeats.all === undefined? 1: numInfo.numOfSeats.all + numInfo.numOfSeats[SeatsArranger.cbGroupId]
+        // コントラバスの人数と譜面台の個数抽出
+        numInfo.numOfPersons[SeatsArranger.cbGroupId] = this.cbLayer.getNumOfPersons()
+        numInfo.numOfPersons.all = numInfo.numOfPersons.all === undefined? 1: numInfo.numOfPersons.all + numInfo.numOfPersons[SeatsArranger.cbGroupId]
 
         numInfo.numOfStands[SeatsArranger.cbGroupId] = this.cbLayer.getNumOfStands()
         numInfo.numOfStands.all = numInfo.numOfStands.all === undefined? 1: numInfo.numOfStands.all + numInfo.numOfStands[SeatsArranger.cbGroupId]
