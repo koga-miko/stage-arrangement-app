@@ -1,7 +1,16 @@
 import Seat from './Seat'
 import MusicStand from './MusicStand'
-import {calcPosFromLen, getRectfrom2pts, optimizeMusicStandsLayout} from './util'
-import {seatsArrangerInfo, cbLayerInfo, SimplePartsInfo} from './data'
+import {
+    calcPosFromLen,
+    getRectfrom2pts,
+    optimizeMusicStandsLayout,
+    mergeActDispPoints
+} from './util'
+import {
+    seatsArrangerInfo,
+    cbLayerInfo,
+    SimplePartsInfo
+} from './data'
 import AreaDivider from './AreaDivider'
 import HistoryManager from './HistoryManager'
 import CbLayer from './CbLayer'
@@ -16,6 +25,8 @@ class SeatsArranger {
         this.dispInfoCalllbackFn = dispInfoCallbackFn
     }
     init() {
+        this.canvas = null
+        this.ctx = null
         this.seats2D = [];            // 座席の全情報
         this.tactPos = {x:0, y:0};    // 指揮者の位置(※譜面台の位置を決定するのに必要)
         this.musicStands2D = [];      // 譜面台の全情報（1列あたり 2 * 座席数 - 1  ※席と席の間にも一応配置していることに留意必要）
@@ -25,6 +36,8 @@ class SeatsArranger {
         this.cbLayer = new CbLayer(cbLayerInfo, SeatsArranger.cbGroupId, ()=>this.update("CbLayer"))
         this.simplePartsList = []
         this.printing = false
+        this.printingArea = null
+        this.printingImg = null
         this.historyManager = new HistoryManager(dataObj => {
             // 履歴の復元
             this.seats2D.forEach((seats,row)=>{
@@ -48,11 +61,16 @@ class SeatsArranger {
             }
         })
     }
+
+    setCanvas(canvas) {
+        this.init()
+        this.canvas = canvas
+        this.ctx = canvas.getContext("2d")
+        this.makeSeats(this.canvas.width, this.canvas.height)
+    }
     // 作成関数
     // width:キャンバスの幅, height:キャンバスの高さ, customFunc:自作のシート作成関数を指定する場合は設定
     makeSeats(width, height, customFunc = null) {
-        this.init()
-
         if (customFunc != null) {
             customFunc(width, height, this.tactPos, this.seats2D)
         }
@@ -183,7 +201,35 @@ class SeatsArranger {
     }
 
     setPrintingMode(printing) {
+        const margin = 10
         this.printing = printing
+        if (this.printing) {
+            const actDispPoints = this.getActDispPoints()
+            if (actDispPoints.visible) {
+                // マージンぶんを加味して対象領域を抽出
+                actDispPoints.staPos.x = Math.max(0, actDispPoints.staPos.x - margin)
+                actDispPoints.staPos.y = Math.max(0, actDispPoints.staPos.y - margin)
+                actDispPoints.endPos.x = Math.min(this.canvas.width, actDispPoints.endPos.x + margin)
+                actDispPoints.endPos.y = Math.min(this.canvas.height, actDispPoints.endPos.y + margin)
+                // X,Y,W,H抽出
+                const x = actDispPoints.staPos.x
+                const y = actDispPoints.staPos.y
+                const w = actDispPoints.endPos.x - actDispPoints.staPos.x
+                const h = actDispPoints.endPos.y - actDispPoints.staPos.y
+                // キャンバスよりも横長
+                // if (w / h > this.canvas.width / this.canvas.height) {
+
+                // }
+                this.printingArea = { x:x, y:y, w:w, h:h }
+                const img = new Image()
+                img.src = this.canvas.toDataURL()
+                img.onload = ()=>{
+                    this.printingImg = img
+                }
+            }
+        } else {
+            this.printingImg = null
+        }
     }
 
     optimizeMusicStandsLayout() {
@@ -223,6 +269,14 @@ class SeatsArranger {
         numInfo.numOfStands.all = numInfo.numOfStands.all === undefined? 1: numInfo.numOfStands.all + numInfo.numOfStands[SeatsArranger.cbGroupId]
         
         return numInfo
+    }
+
+    getActDispPoints() {
+        return mergeActDispPoints([
+            this.seats2D,
+            this.musicStands2D,
+            this.cbLayer.cbSeats,
+            this.simplePartsList])
     }
 
     onClick(x, y, event) {
@@ -484,7 +538,29 @@ class SeatsArranger {
 
         this.update(partsName)
     }
-    draw(ctx) {
+    draw() {
+        const ctx = this.ctx
+
+        // まず背景をクリア
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+        // 印刷用モードでCanvas全体イメージを抽出出来た場合
+        if (this.printing && this.printingArea != null && this.printingImg !== null) {
+            // キャンバス全体イメージから部分抽出してそれを広げて表示
+            ctx.drawImage(
+                this.printingImg,
+                this.printingArea.x,
+                this.printingArea.y,
+                this.printingArea.w,
+                this.printingArea.h,
+                0,
+                0,
+                this.canvas.width,
+                this.canvas.height
+            )
+            return
+        }
+    
         // 座席の描画
         this.seats2D.forEach( seats => {
             seats.forEach(seat => {

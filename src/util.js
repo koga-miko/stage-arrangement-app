@@ -173,11 +173,29 @@ export const drawsq = (ctx,x,y,w,h,r,color,color2) => {
     ctx.strokeStyle = r_color;
     ctx.fillStyle = r_color;
     ctx.moveTo(x,y + r);
-    ctx.arc(x+r,y+h-r,r,Math.PI,Math.PI*0.5,true);
+    ctx.arc(x+r,y+h-r,r,Math.PI,Math.PI*0.5,true);  
     ctx.arc(x+w-r,y+h-r,r,Math.PI*0.5,0,1);
     ctx.arc(x+w-r,y+r,r,0,Math.PI*1.5,1);
     ctx.arc(x+r,y+r,r,Math.PI*1.5,Math.PI,1);       
     ctx.closePath();
     ctx.stroke();
     ctx.fill();
+}
+
+export const mergeActDispPoints = (targets) => {
+    let ret = {visible:false}
+    targets.flat(5).forEach(target=>{
+        const curr = target.getActDispPoints()
+        if (curr.visible) {
+            if (ret.visible) {
+                ret.staPos.x = Math.min(ret.staPos.x, curr.staPos.x)
+                ret.staPos.y = Math.min(ret.staPos.y, curr.staPos.y)
+                ret.endPos.x = Math.max(ret.endPos.x, curr.endPos.x)
+                ret.endPos.y = Math.max(ret.endPos.y, curr.endPos.y)
+            } else {
+                ret = curr
+            }
+        }
+    })
+    return ret
 }

@@ -94,8 +94,8 @@ class Seat extends PartsAction {
     getActDispPoints() {
         return { 
             visible:this.visualState !== SeatVisualState.Hide,
-            staPos: { x:this.x, y:this.y},
-            endPos: { x:this.x + this.radius*2, y:this.y + this.radius*2},
+            staPos: { x:this.x - this.radius, y:this.y - this.radius },
+            endPos: { x:this.x + this.radius, y:this.y + this.radius },
         }
     }
 

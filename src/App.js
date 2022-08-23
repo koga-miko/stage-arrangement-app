@@ -38,15 +38,10 @@ const App = () => {
   const [selectedValues, setSelectedValues] = useState(Array(IdSelIdx.MaxVal).fill(0))
   const [dispStates, setDispStates] = useState(Array(DispStateIdx.MaxVal).fill(false))
   useEffect(()=>{
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext("2d")
     const seatsArranger = seatsArrangerRef.current
-    seatsArranger.makeSeats(canvas.width, canvas.height)
-//    var dataURL = canvas.toDataURL();
-
+    seatsArranger.setCanvas(canvasRef.current)
     const render = () =>{
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      seatsArranger.draw(ctx)
+      seatsArrangerRef.current.draw()
       requestAnimationFrame(render)
     }
     render()

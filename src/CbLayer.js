@@ -1,6 +1,12 @@
 import RectSeat from './RectSeat'
 import MusicStand from './MusicStand'
-import {optimizeMusicStandsLayout, isHitPolygon, calcLenRadFromPos, getRotAbsPos} from './util'
+import {
+    optimizeMusicStandsLayout,
+    isHitPolygon,
+    calcLenRadFromPos,
+    getRotAbsPos,
+    mergeActDispPoints
+} from './util'
 
 class CbLayer {
     static State = {
@@ -127,27 +133,7 @@ class CbLayer {
     }
 
     getActDispPoints() {
-        let ret = {visible:false}
-        this.cbSeats.forEach(cbSeat=>{
-            const curr = cbSeat.getActDispPoints()
-            if (curr.visible) {
-                if (ret.visible) {
-                    ret.staPos.x = Math.min(ret.staPox.x, curr.staPox.x)
-                    ret.staPos.y = Math.min(ret.staPox.y, curr.staPox.y)
-                    ret.endPos.x = Math.max(ret.endPox.x, curr.endPox.x)
-                    ret.endPos.y = Math.max(ret.endPox.y, curr.endPox.y)
-                } else {
-                    ret = curr
-                }
-            }
-        })
-        
-        // TODO: このへんでArray.reduce()で結果集約
-        return {
-            visible: this.visible,
-            staPos: { },//T.B.D
-            endPos: { x:this.x + this.width / 2, y:this.y + this.width / 2},
-        }
+        return mergeActDispPoints(this.cbSeats)
     }
 
     isHit(x, y) {
