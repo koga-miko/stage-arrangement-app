@@ -282,9 +282,11 @@ class SeatsArranger {
         })
         
         // コントラバスの人数と譜面台の個数抽出
+        console.log(this.cbLayer.getNumOfPersons())
         numInfo.numOfPersons[SeatsArranger.cbGroupId] = this.cbLayer.getNumOfPersons()
         numInfo.numOfPersons.all = numInfo.numOfPersons.all === undefined? 1: numInfo.numOfPersons.all + numInfo.numOfPersons[SeatsArranger.cbGroupId]
 
+        console.log(this.cbLayer.getNumOfStands())
         numInfo.numOfStands[SeatsArranger.cbGroupId] = this.cbLayer.getNumOfStands()
         numInfo.numOfStands.all = numInfo.numOfStands.all === undefined? 1: numInfo.numOfStands.all + numInfo.numOfStands[SeatsArranger.cbGroupId]
         

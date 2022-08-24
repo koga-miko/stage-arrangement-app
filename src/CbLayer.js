@@ -159,7 +159,7 @@ class CbLayer {
     }
 
     getNumOfPersons() {
-        return this.visible? this.musicStands.filter(musicStand=>{ return musicStand.hasPerson()}).length: 0
+        return this.visible? this.cbSeats.filter(cbSeat=>{ return cbSeat.hasPerson()}).length: 0
     }
 
     getNumOfStands() {
