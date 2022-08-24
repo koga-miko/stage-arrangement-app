@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/stage-arrangement-app/static/css/main.fcb01e42.css",
-    "main.js": "/stage-arrangement-app/static/js/main.edddb45d.js",
+    "main.js": "/stage-arrangement-app/static/js/main.58bd1346.js",
     "static/media/piano.png": "/stage-arrangement-app/static/media/piano.af216e8ff0950c88ce1e.png",
     "index.html": "/stage-arrangement-app/index.html",
     "main.fcb01e42.css.map": "/stage-arrangement-app/static/css/main.fcb01e42.css.map",
-    "main.edddb45d.js.map": "/stage-arrangement-app/static/js/main.edddb45d.js.map"
+    "main.58bd1346.js.map": "/stage-arrangement-app/static/js/main.58bd1346.js.map"
   },
   "entrypoints": [
     "static/css/main.fcb01e42.css",
-    "static/js/main.edddb45d.js"
+    "static/js/main.58bd1346.js"
   ]
 }
