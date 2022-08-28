@@ -113,7 +113,7 @@ const App = () => {
     }
   }
 
-  const RenderIdSelect = (idSelIdx) => {
+  const renderIdSelect = (idSelIdx) => {
     //TODO:初期値を設定できるようにすること
     const defaultValue = {
       label: selectedValues[idSelIdx]===0? '-': selectedValues[idSelIdx].toString(),
@@ -124,7 +124,7 @@ const App = () => {
         <select 
           onChange={(e) => handleSelectChange(e, idSelIdx)}
           defaultValue={defaultValue}>
-            <option value="">-</option>
+            <option value="0">-</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -166,70 +166,179 @@ const App = () => {
     )
   }
 
+  const renderGroupNumbersInTable = () => {
+    if (dispStates[DispStateIdx.PrintMode] === false) {
+      return(
+          <tr>
+            <th>グループ番号</th>
+            <td>{renderIdSelect(IdSelIdx.Vn1)}</td>
+            <td>{renderIdSelect(IdSelIdx.Vn2)}</td>
+            <td>{renderIdSelect(IdSelIdx.Vn3)}</td>
+            <td>{renderIdSelect(IdSelIdx.Va)}</td>
+            <td>{renderIdSelect(IdSelIdx.Vc)}</td>
+            <td>10</td>
+            <td>-</td>
+          </tr>
+      )
+    }
+    return;
+  }
+
+  const renderPartNamesInTable= (idSelIdx, partName) => {
+    if (idSelIdx === IdSelIdx.Cb) {
+      if (dispStates[DispStateIdx.PrintMode] === true && dispStates[DispStateIdx.CbLayer] === false) {
+        return
+      } else {
+        return (
+          <th>{partName}</th>
+        )
+      }
+    } else {
+      if (dispStates[DispStateIdx.PrintMode] === true && selectedValues[idSelIdx] === 0) {
+        return
+      } else {
+        return (
+          <th>{partName}</th>
+        )
+      }
+    }
+  }
+
+  const renderNumsOfSeatsInTable= (idSelIdx) => {
+    if (idSelIdx === IdSelIdx.Cb) {
+      if (dispStates[DispStateIdx.PrintMode] === true && dispStates[DispStateIdx.CbLayer] === false) {
+        return
+      } else {
+        return (
+          <td>0</td>
+        )
+      }
+    } else {
+      if (dispStates[DispStateIdx.PrintMode] === true && selectedValues[idSelIdx] === 0) {
+        return
+      } else {
+        return (
+          <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[idSelIdx]]}</td>
+        )
+      }
+    }
+  }
+
+  const renderNumsOfPianoSeatsInTable= (idSelIdx) => {
+    if (idSelIdx === IdSelIdx.Cb) {
+      if (dispStates[DispStateIdx.PrintMode] === true && dispStates[DispStateIdx.CbLayer] === false) {
+        return
+      } else {
+        return (
+          <td>0</td>
+        )
+      }
+    } else {
+      if (dispStates[DispStateIdx.PrintMode] === true && selectedValues[idSelIdx] === 0) {
+        return
+      } else {
+        return (
+          <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[idSelIdx]]}</td>
+        )
+      }
+    }
+  }
+
+  const renderNumsOfPersonsInTable= (idSelIdx) => {
+    if (idSelIdx === IdSelIdx.Cb) {
+      if (dispStates[DispStateIdx.PrintMode] === true && dispStates[DispStateIdx.CbLayer] === false) {
+        return
+      } else {
+        return (
+          <td>{dispInfo===null?0:dispInfo.numOfPersons[10]}</td>
+        )
+      }
+    } else {
+      if (dispStates[DispStateIdx.PrintMode] === true && selectedValues[idSelIdx] === 0) {
+        return
+      } else {
+        return (
+          <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[idSelIdx]]}</td>
+        )
+      }
+    }
+  }
+
+  const renderNumsOfStandsInTable= (idSelIdx) => {
+    if (idSelIdx === IdSelIdx.Cb) {
+      if (dispStates[DispStateIdx.PrintMode] === true && dispStates[DispStateIdx.CbLayer] === false) {
+        return
+      } else {
+        return (
+          <td>{dispInfo===null?0:dispInfo.numOfStands[10]}</td>
+        )
+      }
+    } else {
+      if (dispStates[DispStateIdx.PrintMode] === true && selectedValues[idSelIdx] === 0) {
+        return
+      } else {
+        return (
+          <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[idSelIdx]]}</td>
+        )
+      }
+    }
+  }
+
   const renderTableDisp = () => {
     return (
       <table>
         <thead>
           <tr>
             <th>パート</th>
-            <th>Vn1</th>
-            <th>Vn2</th>
-            <th>Vn3</th>
-            <th>Va</th>
-            <th>Vc</th>
-            <th>Cb</th>
+            {renderPartNamesInTable(IdSelIdx.Vn1, "Vn1")}
+            {renderPartNamesInTable(IdSelIdx.Vn2, "Vn2")}
+            {renderPartNamesInTable(IdSelIdx.Vn3, "Vn3")}
+            {renderPartNamesInTable(IdSelIdx.Va, "Va")}
+            {renderPartNamesInTable(IdSelIdx.Vc, "Vc")}
+            {renderPartNamesInTable(IdSelIdx.Cb, "Cb")}
             <th>合計</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>グループ番号</th>
-            <td>{RenderIdSelect(IdSelIdx.Vn1)}</td>
-            <td>{RenderIdSelect(IdSelIdx.Vn2)}</td>
-            <td>{RenderIdSelect(IdSelIdx.Vn3)}</td>
-            <td>{RenderIdSelect(IdSelIdx.Va)}</td>
-            <td>{RenderIdSelect(IdSelIdx.Vc)}</td>
-            <td>10</td>
-            <td>-</td>
-          </tr>
+          {renderGroupNumbersInTable()}
           <tr>
             <th>標準の座席数</th>
-            <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vn1]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vn2]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vn3]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Va]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfSeats[selectedValues[IdSelIdx.Vc]]}</td>
-            <td>0</td>
+            {renderNumsOfSeatsInTable(IdSelIdx.Vn1)}
+            {renderNumsOfSeatsInTable(IdSelIdx.Vn2)}
+            {renderNumsOfSeatsInTable(IdSelIdx.Vn3)}
+            {renderNumsOfSeatsInTable(IdSelIdx.Va)}
+            {renderNumsOfSeatsInTable(IdSelIdx.Vc)}
+            {renderNumsOfSeatsInTable(IdSelIdx.Cb)}
             <td>{dispInfo===null?0:dispInfo.numOfSeats.all}</td>
           </tr>
           <tr>
             <th>ピアノ座席数</th>
-            <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Vn1]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Vn2]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Vn3]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Va]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPianoSeats[selectedValues[IdSelIdx.Vc]]}</td>
-            <td>0</td>
+            {renderNumsOfPianoSeatsInTable(IdSelIdx.Vn1)}
+            {renderNumsOfPianoSeatsInTable(IdSelIdx.Vn2)}
+            {renderNumsOfPianoSeatsInTable(IdSelIdx.Vn3)}
+            {renderNumsOfPianoSeatsInTable(IdSelIdx.Va)}
+            {renderNumsOfPianoSeatsInTable(IdSelIdx.Vc)}
+            {renderNumsOfPianoSeatsInTable(IdSelIdx.Cb)}
             <td>{dispInfo===null?0:dispInfo.numOfPianoSeats.all}</td>
           </tr>
           <tr>
             <th>人数</th>
-            <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Vn1]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Vn2]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Vn3]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Va]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPersons[selectedValues[IdSelIdx.Vc]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfPersons[10]}</td>
+            {renderNumsOfPersonsInTable(IdSelIdx.Vn1)}
+            {renderNumsOfPersonsInTable(IdSelIdx.Vn2)}
+            {renderNumsOfPersonsInTable(IdSelIdx.Vn3)}
+            {renderNumsOfPersonsInTable(IdSelIdx.Va)}
+            {renderNumsOfPersonsInTable(IdSelIdx.Vc)}
+            {renderNumsOfPersonsInTable(IdSelIdx.Cb)}
             <td>{dispInfo===null?0:dispInfo.numOfPersons.all}</td>
           </tr>
           <tr>
             <th>譜面台個数</th>
-            <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Vn1]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Vn2]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Vn3]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Va]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfStands[selectedValues[IdSelIdx.Vc]]}</td>
-            <td>{dispInfo===null?0:dispInfo.numOfStands[10]}</td>
+            {renderNumsOfStandsInTable(IdSelIdx.Vn1)}
+            {renderNumsOfStandsInTable(IdSelIdx.Vn2)}
+            {renderNumsOfStandsInTable(IdSelIdx.Vn3)}
+            {renderNumsOfStandsInTable(IdSelIdx.Va)}
+            {renderNumsOfStandsInTable(IdSelIdx.Vc)}
+            {renderNumsOfStandsInTable(IdSelIdx.Cb)}
             <td>{dispInfo===null?0:dispInfo.numOfStands.all}</td>
           </tr>
         </tbody>
@@ -238,7 +347,7 @@ const App = () => {
   }
   // numInfoオブジェクトの中身は、{numOfSeats: {1:xxx, 2:xxx,...}, numOfStands: {1:xxx, 2:xxx,...} }
   return (
-    <div>
+    <div className="App">
       <h1>
         <textarea rows={1} cols={50} className="text-title" /><br/>
         <textarea rows={1} cols={50} className="sub-title" /><br/>
