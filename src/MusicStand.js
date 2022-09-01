@@ -2,18 +2,18 @@ import PartsAction from './PartsAction'
 
 class MusicStand extends PartsAction {
     State = {
-        Hide: 'Hide',
-        Black: 'Black',
-        Red: 'Red',
+        Hide: 'H',
+        Black: 'B',
+        Red: 'R',
     }
     
     constructor(partsName, x, y, width = 16, lineW = 4) {
         super(partsName)
-        this.x = x
-        this.y = y
-        this.width = width
+        this.x = parseInt(x)
+        this.y = parseInt(y)
+        this.width = parseInt(width)
         this.state = this.State.Hide
-        this.lineW = lineW
+        this.lineW = parseInt(lineW)
 //        console.log("x,y"+this.x+","+this.y)
     }
 
@@ -21,10 +21,10 @@ class MusicStand extends PartsAction {
         return JSON.stringify({
             x: this.x,
             y: this.y,
-            width: this.width,
-            state: this.state,
-            lineW: this.lineW,
-            actState: this.actState, // 派生元クラスPartsActionの分
+//            w: this.width,
+            s: this.state,
+//            l: this.lineW,
+            a: this.actState, // 派生元クラスPartsActionの分
         })
     }
 
@@ -38,10 +38,10 @@ class MusicStand extends PartsAction {
         }
         this.x = obj.x
         this.y = obj.y
-        this.width = obj.width
-        this.state = obj.state
-        this.lineW = obj.lineW
-        this.actState = obj.actState // 派生元クラスPartsActionの分
+//        this.width = obj.w
+        this.state = obj.s
+//        this.lineW = obj.l
+        this.actState = obj.a // 派生元クラスPartsActionの分
     }
 
     activate(isActive) {

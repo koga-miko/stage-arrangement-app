@@ -1,17 +1,17 @@
 import PartsAction from './PartsAction'
 const SeatVisualState = {
-    Hide: 'Hide',
-    Normal: 'Normal',
-    Black: 'Black',
+    Hide: 'H',
+    Normal: 'N',
+    Black: 'B',
 }
 
 class RectSeat extends PartsAction {
     constructor(partsName, x, y, w, h, groupId) {
         super(partsName)
-        this.w = w
-        this.h = h
-        this.x = x - this.w / 2
-        this.y = y - this.h / 2
+        this.w = parseInt(w)
+        this.h = parseInt(h)
+        this.x = parseInt(x - this.w / 2)
+        this.y = parseInt(y - this.h / 2)
         this.visualState = SeatVisualState.Normal
         this.groupId = groupId
     }
@@ -22,9 +22,9 @@ class RectSeat extends PartsAction {
             y: this.y,
             w: this.w,
             h: this.h,
-            visualState: this.visualState,
-            groupId: this.groupId,
-            actState: this.actState, // 派生元クラスPartsActionの分
+            v: this.visualState,
+            g: this.groupId,
+            a: this.actState, // 派生元クラスPartsActionの分
         })
     }
 
@@ -40,9 +40,9 @@ class RectSeat extends PartsAction {
         this.y = obj.y
         this.w = obj.w
         this.h = obj.h
-        this.visualState = obj.visualState
-        this.groupId = obj.groupId
-        this.actState = obj.actState // 派生元クラスPartsActionの分
+        this.visualState = obj.v
+        this.groupId = obj.g
+        this.actState = obj.a // 派生元クラスPartsActionの分
     }
 
     changeState() {
@@ -62,13 +62,13 @@ class RectSeat extends PartsAction {
     }
 
     changePos(x, y) {
-        this.x = x - this.w / 2
-        this.y = y - this.h / 2
+        this.x = parseInt(x - this.w / 2)
+        this.y = parseInt(y - this.h / 2)
     }
 
     movePos(x, y) {
-        this.x = this.x + x
-        this.y = this.y + y
+        this.x = parseInt(this.x + x)
+        this.y = parseInt(this.y + y)
     }
 
     getPos() {

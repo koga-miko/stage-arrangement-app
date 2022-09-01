@@ -1,9 +1,9 @@
 export const PartsActionState = {
-    Idle: 'Idle',               // 特になし
-    ShortDown: 'ShortDown',     // MouseDownで選択されたが次のアクションが決まっていない
-    LongDown: 'LongDown',       // 領域上で長めに押され続けた後の特別選択状態
-    Moving: 'Moving',           // 特別選択状態でMouseMoveした状態
-    Selected: 'Selected',       // 矩形選択等で選択されている状態
+    Idle: 'I',           // 特になし
+    ShortDown: 'S',      // MouseDownで選択されたが次のアクションが決まっていない
+    LongDown: 'L',       // 領域上で長めに押され続けた後の特別選択状態
+    Moving: 'M',         // 特別選択状態でMouseMoveした状態
+    Selected: 'S',       // 矩形選択等で選択されている状態
 }
 
 class PartsAction {

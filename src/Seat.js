@@ -1,19 +1,19 @@
 import PartsAction from './PartsAction'
 const SeatVisualState = {
-    Hide: 'Hide',
-    Normal: 'Normal',
-    Black: 'Black',
-    Red: 'Red',                     // SpecialMode
-    RedAndBlack: 'RedAndBlack',     // SpecialMode
-    DoubleCircle: 'doubleCircle',   // SpecialMode
+    Hide: 'H',
+    Normal: 'N',
+    Black: 'B',
+    Red: 'R',                     // SpecialMode
+    RedAndBlack: 'RB',     // SpecialMode
+    DoubleCircle: 'DC',   // SpecialMode
 }
 
 class Seat extends PartsAction {
     constructor(partsName, x, y, radius, groupId) {
         super(partsName)
-        this.x = x
-        this.y = y
-        this.radius = radius
+        this.x = parseInt(x)
+        this.y = parseInt(y)
+        this.radius = parseInt(radius)
         this.visualState = SeatVisualState.Normal
         this.groupId = groupId
         this.selected = false
@@ -23,10 +23,10 @@ class Seat extends PartsAction {
         return JSON.stringify({
             x: this.x,
             y: this.y,
-            radius: this.radius,
-            visualState: this.visualState,
-            groupId: this.groupId,
-            actState: this.actState, // 派生元クラスPartsActionの分
+//            r: this.radius,
+            v: this.visualState,
+            g: this.groupId,
+            a: this.actState, // 派生元クラスPartsActionの分
         })
     }
 
@@ -40,10 +40,10 @@ class Seat extends PartsAction {
         }
         this.x = obj.x
         this.y = obj.y
-        this.radius = obj.radius
-        this.visualState = obj.visualState
-        this.groupId = obj.groupId
-        this.actState = obj.actState // 派生元クラスPartsActionの分
+//        this.radius = obj.r
+        this.visualState = obj.v
+        this.groupId = obj.g
+        this.actState = obj.a // 派生元クラスPartsActionの分
     }
 
     changeState() {
@@ -83,8 +83,8 @@ class Seat extends PartsAction {
     }
 
     changePos(x, y) {
-        this.x = x
-        this.y = y
+        this.x = parseInt(x)
+        this.y = parseInt(y)
     }
 
     getPos() {

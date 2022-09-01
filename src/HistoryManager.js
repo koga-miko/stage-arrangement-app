@@ -7,6 +7,7 @@ class HistoryManager {
     }
 
     registerHistory(hist) {
+        console.log(`histrory size: ${JSON.stringify(hist).length}`)
         const len = this.histories.length
         // まだ履歴が存在しない場合
         if (len === 0) {

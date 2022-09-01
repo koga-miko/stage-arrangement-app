@@ -518,13 +518,14 @@ class SeatsArranger {
 
     update(partsName) {
         // console.log("updated!:"+partsName)
-
+//        console.log("------------ Size ----------------")
         // 履歴を保存
         const seats2DData = []
         this.seats2D.forEach((seats,row)=>{
             seats2DData[row] = []
             seats.forEach((seat,col)=>{
                 seats2DData[row][col] = seat.serializeData()
+//                console.log(`Size: seats2DData[${row}][${col}]=${seats2DData[row][col].length}`)
             })
         })
         
@@ -533,13 +534,17 @@ class SeatsArranger {
             musicStands2DData[row] = []
             musicStands.forEach((musicStand,col)=>{
                 musicStands2DData[row][col] = musicStand.serializeData()
+ //               console.log(`Size: musicStands2DData[${row}][${col}]=${musicStands2DData[row][col].length}`)
             })
         })
 
         const simplePartsListData = []
         this.simplePartsList.forEach((simpleParts, idx)=>{
             simplePartsListData[idx] = simpleParts.serializeData()
+ //           console.log(`Size: simplePartsListData[${idx}]=${simplePartsListData[idx].length}`)
         })
+//        console.log(`Size: areaDivider=${this.areaDivider.serializeData().length}`)
+//        console.log(`Size: cbLayer=${this.cbLayer.serializeData().length}`)
 
         this.historyManager.registerHistory({
             seats2DData : seats2DData,             

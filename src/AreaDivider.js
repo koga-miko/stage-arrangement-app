@@ -2,16 +2,16 @@ import {calcLenRadFromPos, getRotRelPos} from './util'
 class AreaDivider {
     static GROUP_ID_MAX = 9 // 設定するグループIDの最大値(10はCb用としているため9に設定)
     StateKind = {
-        Idle: "Idle",
-        Dividing: "Dividing",
+        Idle: "I",
+        Dividing: "D",
     }
 
     DividedAreaState = {
-        NoHit: "NoHit",
-        InHit: "InHit",
-        OutHit: "OutHit",
-        In2OutHit: "In2OutHit",
-        Out2InHit: "Out2InHit",
+        NoHit: "NH",
+        InHit: "IH",
+        OutHit: "OH",
+        In2OutHit: "IO",
+        Out2InHit: "OI",
     }
 
     constructor() {
@@ -56,7 +56,7 @@ class AreaDivider {
     }
 
     clearCurDivInfo() {
-        this.curDivInfo = {divList:[], isCompleted:false, isLooped:false, isSelected:false}; // divListは{col:xxx, row:xxx, areaState:this.DividedAreaState.xxx} を保持する配列
+        this.curDivInfo = {divList:[], isCompleted:false, isLooped:false, isSelected:false}; // divListは{col:xxx, row:xxx, stt:this.DividedAreaState.xxx} を保持する配列
     }
     
     getUnusedGgroupId() {
@@ -212,12 +212,12 @@ class AreaDivider {
         let drawPosList = []
         for (let i = 0; i < this.curDivInfo.divList.length; i++) {
             let dividedArea = this.dividedAreas2D[this.curDivInfo.divList[i].row][this.curDivInfo.divList[i].col]
-            if (dividedArea.state === this.DividedAreaState.In2OutHit) {
-                drawPosList.push(dividedArea.inDivPos)
-                drawPosList.push(dividedArea.outDivPos)
-            } else if (dividedArea.state === this.DividedAreaState.Out2InHit) {
-                drawPosList.push(dividedArea.outDivPos)
-                drawPosList.push(dividedArea.inDivPos)
+            if (dividedArea.stt === this.DividedAreaState.In2OutHit) {
+                drawPosList.push(dividedArea.iDvP)
+                drawPosList.push(dividedArea.oDvP)
+            } else if (dividedArea.stt === this.DividedAreaState.Out2InHit) {
+                drawPosList.push(dividedArea.oDvP)
+                drawPosList.push(dividedArea.iDvP)
             }
         }
         if (this.curDivInfo.isLooped === true && drawPosList.length > 0) {
@@ -228,11 +228,11 @@ class AreaDivider {
 
     transitToIdle() {
         this.positions = []
-        this.state = this.StateKind.Idle
+        this.stt = this.StateKind.Idle
     }
     
     setArea(x, y, w, h) {
-        this.rect = {x:x, y:y, w:w, h:h}
+        this.rect = {x:parseInt(x), y:parseInt(y), w:parseInt(w), h:parseInt(h)}
     }
 
     registerDividing(objects2D, callbackFn) {
@@ -269,23 +269,27 @@ class AreaDivider {
                     y2 = objects2D[i][j].y
                     r = objects2D[i][j-1].radius
                 }
-                
-                let objLenRadian = calcLenRadFromPos(x1, y1, x2, y2)
+                x1 = parseInt(x1)
+                y1 = parseInt(y1)
+                x2 = parseInt(x2)
+                y2 = parseInt(y2)
+                r = parseInt(r)
 
-                let centerPos = {x:(x2 + x1) / 2, y:(y2 + y1) / 2};        // 範囲を表す2点の中点をcenterPosとする
+                let objLenRadian = calcLenRadFromPos(x1, y1, x2, y2)
+                
+                let centerPos = {x:parseInt((x2 + x1) / 2), y:parseInt((y2 + y1) / 2)};        // 範囲を表す2点の中点をcenterPosとする
                 let relStartPos = {x:x1 - centerPos.x, y:y1 - centerPos.y} // startPosのcenterPosからの相対x座標
                 let relEndPos = {x:x2 - centerPos.x, y:y2 - centerPos.y} //　startPosのcenterPosからの相対y座標
 
                 let dividedArea = {
-                    centerPos: centerPos,
-                    startPos:{x:x1, y:y1},
-                    endPos:{x:x2, y:y2},
-                    len:objLenRadian.len,
-                    radian:objLenRadian.radian,
-                    r:r,
-                    inDivPos: {x:relStartPos.y + centerPos.x, y:- relStartPos.x + centerPos.y}, // (startPosの相対x座標をcenterPosを中心に90度反時計回りに回転)
-                    outDivPos:{x:relEndPos.y + centerPos.x, y:- relEndPos.x + centerPos.y},　// (endPosの相対x座標をcenterPosを中心に90度反時計回りに回転)
-                    state:this.DividedAreaState.NoHit,
+                    sPs:{x:x1, y:y1},
+                    ePs:{x:x2, y:y2},
+                    len:parseInt(objLenRadian.len),
+//                    radian:objLenRadian.radian,
+//                    r:r,
+                    iDvP: {x:relStartPos.y + centerPos.x, y:- relStartPos.x + centerPos.y}, // (startPosの相対x座標をcenterPosを中心に90度反時計回りに回転)
+                    oDvP:{x:relEndPos.y + centerPos.x, y:- relEndPos.x + centerPos.y},　// (endPosの相対x座標をcenterPosを中心に90度反時計回りに回転)
+                    stt:this.DividedAreaState.NoHit,
                 }
                 dividedAreas.push(dividedArea)
             }
@@ -390,8 +394,8 @@ class AreaDivider {
     getWhichDividedArea(dividedArea, x, y) {
         let dividedAreaStatus = this.DividedAreaState.NoHit
         let [ofsX, ofsY] = getRotRelPos(x, y
-                                , dividedArea.startPos.x, dividedArea.startPos.y
-                                , - Math.atan2(dividedArea.endPos.y - dividedArea.startPos.y, dividedArea.endPos.x - dividedArea.startPos.x)); // startPosに平行になるように(時計回りで)回転させたstartPosからの相対位置の取得
+                                , dividedArea.sPs.x, dividedArea.sPs.y
+                                , - Math.atan2(dividedArea.ePs.y - dividedArea.sPs.y, dividedArea.ePs.x - dividedArea.sPs.x)); // startPosに平行になるように(時計回りで)回転させたstartPosからの相対位置の取得
         if (0 <= ofsX && ofsX < dividedArea.len) {
 //          if (0 <= ofsY && ofsY < dividedArea.r) {
             if (0 <= ofsY && ofsY < dividedArea.len/2) {
@@ -414,33 +418,33 @@ class AreaDivider {
         this.dividedAreas2D.forEach((dividedAreas, row) => {
             dividedAreas.forEach((dividedArea, col) => {
                 let whichDividedArea = this.getWhichDividedArea(dividedArea, x, y)
-                if (dividedArea.state === this.DividedAreaState.InHit) {
+                if (dividedArea.stt === this.DividedAreaState.InHit) {
                     if (whichDividedArea === this.DividedAreaState.InHit){
                         // 変化なし
                     }else if (whichDividedArea === this.DividedAreaState.OutHit) {
-                        dividedArea.state = this.DividedAreaState.In2OutHit
-                        this.curDivInfo.divList.push({col:col, row:row, areaState:this.DividedAreaState.In2OutHit})
+                        dividedArea.stt = this.DividedAreaState.In2OutHit
+                        this.curDivInfo.divList.push({col:col, row:row, stt:this.DividedAreaState.In2OutHit})
                         // console.log(this.curDivInfo.divList[this.curDivInfo.divList.length-1])
                         isChanged = true
                     } else {
-                        dividedArea.state = this.DividedAreaState.NoHit
-                        // console.log(dividedArea.state)
+                        dividedArea.stt = this.DividedAreaState.NoHit
+                        // console.log(dividedArea.stt)
                         isChanged = true
-                    }
-                } else if (dividedArea.state === this.DividedAreaState.OutHit) {
+                    }   
+                } else if (dividedArea.stt === this.DividedAreaState.OutHit) {
                     if (whichDividedArea === this.DividedAreaState.InHit){
-                        dividedArea.state = this.DividedAreaState.Out2InHit
-                        this.curDivInfo.divList.push({col:col, row:row, areaState:this.DividedAreaState.Out2InHit})
+                        dividedArea.stt = this.DividedAreaState.Out2InHit
+                        this.curDivInfo.divList.push({col:col, row:row, stt:this.DividedAreaState.Out2InHit})
                         // console.log(this.curDivInfo.divList[this.curDivInfo.divList.length-1])
                         isChanged = true
                     }else if (whichDividedArea === this.DividedAreaState.OutHit) {
                         // 変化なし
                     } else {
-                        dividedArea.state = this.DividedAreaState.NoHit
-                        // console.log(dividedArea.state)
+                        dividedArea.stt = this.DividedAreaState.NoHit
+                        // console.log(dividedArea.stt)
                         isChanged = true
                     }
-                } else if (dividedArea.state === this.DividedAreaState.In2OutHit) {
+                } else if (dividedArea.stt === this.DividedAreaState.In2OutHit) {
                     if (whichDividedArea === this.DividedAreaState.InHit){
                         let len = this.curDivInfo.divList.length
                         // 2個以上を含む分割領域の先頭にまた入ってきた（ループ状態）
@@ -451,11 +455,11 @@ class AreaDivider {
                         }
                         else if (len >= 1 && this.curDivInfo.divList[len-1].col === col && this.curDivInfo.divList[len-1].row === row) {
                             this.curDivInfo.divList.pop()
-                            dividedArea.state = this.DividedAreaState.InHit
+                            dividedArea.stt = this.DividedAreaState.InHit
                             // console.log(this.curDivInfo.divList.pop)
                         }
                         else {
-//                            console.log("error: In2OutHit to InHit, but invalid state. row:"+row+",col:"+col)
+//                            console.log("error: In2OutHit to InHit, but invalid stt. row:"+row+",col:"+col)
                         }
                         isChanged = true
                     }else if (whichDividedArea === this.DividedAreaState.OutHit) {
@@ -463,7 +467,7 @@ class AreaDivider {
                     } else {
                         // 変化なし
                     }
-                } else if (dividedArea.state === this.DividedAreaState.Out2InHit) {
+                } else if (dividedArea.stt === this.DividedAreaState.Out2InHit) {
                     if (whichDividedArea === this.DividedAreaState.InHit){
                         // 変化なし
                     }else if (whichDividedArea === this.DividedAreaState.OutHit) {
@@ -475,20 +479,20 @@ class AreaDivider {
                         }
                         else if (len >= 1 && this.curDivInfo.divList[len-1].col === col && this.curDivInfo.divList[len-1].row === row) {
                             this.curDivInfo.divList.pop()
-                            dividedArea.state = this.DividedAreaState.OutHit
+                            dividedArea.stt = this.DividedAreaState.OutHit
                         }
-//                        console.log("error: In2OutHit to InHit, but invalid state. row:"+row+",col:"+col)
+//                        console.log("error: In2OutHit to InHit, but invalid stt. row:"+row+",col:"+col)
                         isChanged = true
                     } else {
                         // 変化なし
                     }
                 } else {
                     if (whichDividedArea === this.DividedAreaState.InHit){
-                        dividedArea.state = this.DividedAreaState.InHit
+                        dividedArea.stt = this.DividedAreaState.InHit
                         // console.log("InHit row:"+row+",col:"+col)
                         isChanged = true
                     }else if (whichDividedArea === this.DividedAreaState.OutHit) {
-                        dividedArea.state = this.DividedAreaState.OutHit
+                        dividedArea.stt = this.DividedAreaState.OutHit
                         // console.log("OutHit row:"+row+",col:"+col)
                         isChanged = true
                     } else {
@@ -520,7 +524,7 @@ class AreaDivider {
     clearDividedAreaStatus() {
         this.dividedAreas2D.forEach(dividedAreas => {
             dividedAreas.forEach(dividedArea => {
-                dividedArea.state = this.DividedAreaState.NoHit
+                dividedArea.stt = this.DividedAreaState.NoHit
             })
         })
         this.clearCurDivInfo()
@@ -532,16 +536,16 @@ class AreaDivider {
         if (divList.length >= 1) {
             let i = 0
             for (; i < divList.length - 1; i++) {
-                if (divList[i].areaState === this.DividedAreaState.In2OutHit) {
-                    if (( divList[i].row      === divList[i+1].row && divList[i+1].areaState === this.DividedAreaState.Out2InHit)
-                    ||  ((divList[i].row + 1) === divList[i+1].row && divList[i+1].areaState === this.DividedAreaState.In2OutHit)) {
+                if (divList[i].stt === this.DividedAreaState.In2OutHit) {
+                    if (( divList[i].row      === divList[i+1].row && divList[i+1].stt === this.DividedAreaState.Out2InHit)
+                    ||  ((divList[i].row + 1) === divList[i+1].row && divList[i+1].stt === this.DividedAreaState.In2OutHit)) {
                         continue
                     } else {
                         break
                     }
-                } else if (divList[i].areaState === this.DividedAreaState.Out2InHit) {
-                    if (( divList[i].row      === divList[i+1].row && divList[i+1].areaState === this.DividedAreaState.In2OutHit)
-                    ||  ((divList[i].row - 1) === divList[i+1].row && divList[i+1].areaState === this.DividedAreaState.Out2InHit)) {
+                } else if (divList[i].stt === this.DividedAreaState.Out2InHit) {
+                    if (( divList[i].row      === divList[i+1].row && divList[i+1].stt === this.DividedAreaState.In2OutHit)
+                    ||  ((divList[i].row - 1) === divList[i+1].row && divList[i+1].stt === this.DividedAreaState.Out2InHit)) {
                         continue
                     } else {
                         break
@@ -562,14 +566,14 @@ class AreaDivider {
     onMouseDown(x, y, event) {
         if (this.object2D !== null) {
             this.positions = [{x:x,y:y}]
-            this.state = this.StateKind.Dividing
+            this.stt = this.StateKind.Dividing
             this.clearDividedAreaStatus()
             this.updateDividedAreaStatus(x, y)
         }
     }
 
     onMouseMove(x, y, event) {
-        if (this.state === this.StateKind.Dividing) {
+        if (this.stt === this.StateKind.Dividing) {
             if (this.isHit(x, y) === true) {
                 this.positions.push({x:x,y:y})
                 if (this.object2D !== null) {
@@ -587,7 +591,7 @@ class AreaDivider {
     }
 
     onMouseUp(x, y, event) {
-        if (this.state === this.StateKind.Dividing) {
+        if (this.stt === this.StateKind.Dividing) {
             if (this.object2D !== null) {
                 this.completeDividedAreaStatus()
             }
@@ -614,7 +618,7 @@ class AreaDivider {
             ctx.stroke()
         }
 
-        if (this.state === this.StateKind.Dividing) {
+        if (this.stt === this.StateKind.Dividing) {
             ctx.beginPath()
             ctx.setLineDash([1,3])
             ctx.strokeStyle = "rgb(144, 171, 114)"

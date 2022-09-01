@@ -24,10 +24,10 @@ class SimpleParts extends PartsAction {
 
     serializeData(){
         return JSON.stringify({
-            visible: this.visible,
+            v: this.visible,
             x: this.x,
             y: this.y,
-            actState: this.actState, // 派生元クラスPartsActionの分
+            a: this.actState, // 派生元クラスPartsActionの分
         })
     }
 
@@ -39,10 +39,10 @@ class SimpleParts extends PartsAction {
           console.e('Failed to parse json')
           return
         }
-        this.visible = obj.visible
+        this.visible = obj.v
         this.x = obj.x
         this.y = obj.y
-        this.actState = obj.actState // 派生元クラスPartsActionの分
+        this.actState = obj.a // 派生元クラスPartsActionの分
     }
 
     setVisible(visible) {
