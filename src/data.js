@@ -58,8 +58,8 @@ export const cbLayerInfo = {
         h: 140,
     },
     seatWH: {
-        w: 60,
-        h: 60,
+        w: 58,
+        h: 58,
     },
     distToStand: 55,
     seatsInfs: [

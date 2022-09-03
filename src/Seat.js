@@ -1,20 +1,20 @@
 import PartsAction from './PartsAction'
-const SeatVisualState = {
-    Hide: 'H',
-    Normal: 'N',
-    Black: 'B',
-    Red: 'R',                     // SpecialMode
-    RedAndBlack: 'RB',     // SpecialMode
-    DoubleCircle: 'DC',   // SpecialMode
-}
-
 class Seat extends PartsAction {
+    static VisualState = {
+        Hide: 'H',              // 非表示状態
+        Normal: 'N',            // 通常状態
+        Black: 'B',             // 真っ黒の状態
+        Red: 'R',               // SpecialMode: 枠が赤の状態
+        RedAndBlack: 'RB',      // SpecialMode: 枠が赤で中が真っ黒の状態
+        DoubleCircle: 'DC',     // SpecialMode: 二重丸
+    }
+    
     constructor(partsName, x, y, radius, groupId) {
         super(partsName)
         this.x = parseInt(x)
         this.y = parseInt(y)
         this.radius = parseInt(radius)
-        this.visualState = SeatVisualState.Normal
+        this.visualState = Seat.VisualState.Normal
         this.groupId = groupId
         this.selected = false
     }
@@ -48,38 +48,38 @@ class Seat extends PartsAction {
 
     changeState() {
         switch (this.visualState) {
-            case SeatVisualState.Normal:
-                this.visualState = SeatVisualState.Hide
+            case Seat.VisualState.Normal:
+                this.visualState = Seat.VisualState.Hide
                 break
-            case SeatVisualState.Hide:
-                this.visualState = SeatVisualState.Black
+            case Seat.VisualState.Hide:
+                this.visualState = Seat.VisualState.Black
                 break
-            case SeatVisualState.Black:
-                this.visualState = SeatVisualState.Normal
+            case Seat.VisualState.Black:
+                this.visualState = Seat.VisualState.Normal
                 break
             default:
-                this.visualState = SeatVisualState.Normal
+                this.visualState = Seat.VisualState.Normal
         }
-    }
-
-    hide() {
-        this.visualState = SeatVisualState.Hide
     }
 
     changeSpecialState() {
         switch (this.visualState) {
-            case SeatVisualState.Red:
-                this.visualState = SeatVisualState.RedAndBlack
+            case Seat.VisualState.Red:
+                this.visualState = Seat.VisualState.RedAndBlack
                 break
-            case SeatVisualState.RedAndBlack:
-                this.visualState = SeatVisualState.DoubleCircle
+            case Seat.VisualState.RedAndBlack:
+                this.visualState = Seat.VisualState.DoubleCircle
                 break
-            case SeatVisualState.DoubleCircle:
-                this.visualState = SeatVisualState.Red
+            case Seat.VisualState.DoubleCircle:
+                this.visualState = Seat.VisualState.Red
                 break
             default:
-                this.visualState = SeatVisualState.Red
+                this.visualState = Seat.VisualState.Red
         }
+    }
+
+    setVisualState(state) {
+        this.visualState = state
     }
 
     changePos(x, y) {
@@ -93,7 +93,7 @@ class Seat extends PartsAction {
 
     getActDispPoints() {
         return { 
-            visible:this.visualState !== SeatVisualState.Hide,
+            visible:this.visualState !== Seat.VisualState.Hide,
             staPos: { x:this.x - this.radius, y:this.y - this.radius },
             endPos: { x:this.x + this.radius, y:this.y + this.radius },
         }
@@ -117,11 +117,11 @@ class Seat extends PartsAction {
     isExistence() {
         let active = false
         switch (this.visualState) {
-            case SeatVisualState.Normal:
-            case SeatVisualState.Red:
-            case SeatVisualState.Black:
-            case SeatVisualState.RedAndBlack:
-            case SeatVisualState.DoubleCircle:
+            case Seat.VisualState.Normal:
+            case Seat.VisualState.Red:
+            case Seat.VisualState.Black:
+            case Seat.VisualState.RedAndBlack:
+            case Seat.VisualState.DoubleCircle:
                 active = true
                 break
             default:
@@ -133,10 +133,10 @@ class Seat extends PartsAction {
     isStandardSeat() {
         let active = false
         switch (this.visualState) {
-            case SeatVisualState.Normal:
-            case SeatVisualState.Red:
-            case SeatVisualState.Black:
-            case SeatVisualState.RedAndBlack:
+            case Seat.VisualState.Normal:
+            case Seat.VisualState.Red:
+            case Seat.VisualState.Black:
+            case Seat.VisualState.RedAndBlack:
                 active = true
                 break
             default:
@@ -148,7 +148,7 @@ class Seat extends PartsAction {
     isPianoSeat() {
         let active = false
         switch (this.visualState) {
-            case SeatVisualState.DoubleCircle:
+            case Seat.VisualState.DoubleCircle:
                 active = true
                 break
             default:
@@ -160,9 +160,9 @@ class Seat extends PartsAction {
     hasPerson() {
         let active = false
         switch (this.visualState) {
-            case SeatVisualState.Normal:
-            case SeatVisualState.Red:
-            case SeatVisualState.DoubleCircle:
+            case Seat.VisualState.Normal:
+            case Seat.VisualState.Red:
+            case Seat.VisualState.DoubleCircle:
                 active = true
                 break
             default:
@@ -177,7 +177,7 @@ class Seat extends PartsAction {
 
     draw(ctx, printing = false) {
         // 印刷時表示かつHide状態なら描画しない
-        if (printing && this.visualState === SeatVisualState.Hide) {
+        if (printing && this.visualState === Seat.VisualState.Hide) {
             return
         }
 
@@ -188,26 +188,26 @@ class Seat extends PartsAction {
         ctx.lineWidth = 2
  
         switch (this.visualState) {
-            case SeatVisualState.Hide:
+            case Seat.VisualState.Hide:
                 ctx.setLineDash([1,3])
                 ctx.strokeStyle = "gray"
                 ctx.lineWidth = 1
                 break
-            case SeatVisualState.Normal:
+            case Seat.VisualState.Normal:
                 break
-            case SeatVisualState.Black:
+            case Seat.VisualState.Black:
                 ctx.fillStyle = "black"
                 break
-            case SeatVisualState.Red:
+            case Seat.VisualState.Red:
                 ctx.strokeStyle = "rgb(170, 46, 46)"
                 ctx.lineWidth = 4
                 break
-            case SeatVisualState.RedAndBlack:
-                ctx.strokeStyle = "redrgb(212, 104, 105)"
+            case Seat.VisualState.RedAndBlack:
+                ctx.strokeStyle = "rgb(170, 46, 46)"
                 ctx.fillStyle = "black"
                 ctx.lineWidth = 3
                 break
-            case SeatVisualState.DoubleCircle:
+            case Seat.VisualState.DoubleCircle:
                 ctx.arc(this.x, this.y, this.radius * 0.6, 0, 2 * Math.PI)
                 ctx.fill()
                 ctx.stroke()
@@ -220,7 +220,7 @@ class Seat extends PartsAction {
         ctx.stroke()
 
         // groupIdの表示
-        if (!printing && this.visualState !== SeatVisualState.Hide) {
+        if (!printing && this.visualState !== Seat.VisualState.Hide) {
             ctx.beginPath()
             ctx.font = "16pt 'Arial'"
             ctx.fillStyle = "rgb(89, 107, 176)"

@@ -8,10 +8,10 @@ const SeatVisualState = {
 class RectSeat extends PartsAction {
     constructor(partsName, x, y, w, h, groupId) {
         super(partsName)
-        this.w = parseInt(w)
-        this.h = parseInt(h)
-        this.x = parseInt(x - this.w / 2)
-        this.y = parseInt(y - this.h / 2)
+        this.w = w
+        this.h = h
+        this.x = x - this.w / 2
+        this.y = y - this.h / 2
         this.visualState = SeatVisualState.Normal
         this.groupId = groupId
     }
@@ -62,13 +62,13 @@ class RectSeat extends PartsAction {
     }
 
     changePos(x, y) {
-        this.x = parseInt(x - this.w / 2)
-        this.y = parseInt(y - this.h / 2)
+        this.x = x - this.w / 2
+        this.y = y - this.h / 2
     }
 
     movePos(x, y) {
-        this.x = parseInt(this.x + x)
-        this.y = parseInt(this.y + y)
+        this.x = this.x + x
+        this.y = this.y + y
     }
 
     getPos() {

@@ -39,17 +39,14 @@ class SeatsArranger {
         this.printingBefore1stDraw = false
         this.printingArea = null
         this.printingImg = null
+        this.prevKey = ""
         this.historyManager = new HistoryManager(dataObj => {
             // 履歴の復元
-            this.seats2D.forEach((seats,row)=>{
-                seats.forEach((seat,col)=>{
-                    seat.deserializeData(dataObj.seats2DData[row][col])
-                })
+            this.forEachAllSeats((seat,row,col)=>{
+                seat.deserializeData(dataObj.seats2DData[row][col])
             })
-            this.musicStands2D.forEach((musicStands,row)=>{
-                musicStands.forEach((musicStand,col)=>{
-                    musicStand.deserializeData(dataObj.musicStands2DData[row][col])
-                })
+            this.forEachAllMusicStands((musicStand,row,col)=>{
+                musicStand.deserializeData(dataObj.musicStands2DData[row][col])
             })
             this.areaDivider.deserializeData(dataObj.areaDividerData)
             this.cbLayer.deserializeData(dataObj.cbLayerData)
@@ -271,14 +268,12 @@ class SeatsArranger {
         })
 
         // 譜面台のグループごとの個数抽出
-        this.musicStands2D.forEach((musicStands,row)=>{
-            musicStands.forEach((musicStand,col)=>{
-                if (musicStand.isExistence()) {
-                    const groupId = this.seats2D[row][Math.floor(col / 2)].groupId
-                    numInfo.numOfStands[groupId] = numInfo.numOfStands[groupId] === undefined? 1: numInfo.numOfStands[groupId]+1
-                    numInfo.numOfStands.all = numInfo.numOfStands.all === undefined? 1: numInfo.numOfStands.all + 1
-                }
-            })
+        this.forEachAllMusicStands((musicStand,row,col)=>{
+            if (musicStand.isExistence()) {
+                const groupId = this.seats2D[row][Math.floor(col / 2)].groupId
+                numInfo.numOfStands[groupId] = numInfo.numOfStands[groupId] === undefined? 1: numInfo.numOfStands[groupId]+1
+                numInfo.numOfStands.all = numInfo.numOfStands.all === undefined? 1: numInfo.numOfStands.all + 1
+            }
         })
         
         // コントラバスの人数と譜面台の個数抽出
@@ -360,16 +355,8 @@ class SeatsArranger {
             this.selPos[0].y = this.selPos[1].y = y
         }
         else {
-            this.selecting = false
-
-            // 座席の選択状態をクリア
-            this.seats2D.forEach( seats => {
-                seats.forEach(seat => {
-                    seat.selected = false
-                })
-            })
-            // 領域分割の選択状態を解除
-            this.areaDivider.cancelSelectedDivLines()
+            // 選択状態の解除
+            this.clearSelectedStates()
 
             this.areaDivider.onMouseDown(x, y, event)
         }
@@ -389,15 +376,11 @@ class SeatsArranger {
             this.simplePartsList.forEach((simpleParts)=>{
                 simpleParts.onMouseMove(x, y, event)
             })
-            this.seats2D.forEach( seats => {
-                seats.forEach(seat => {
-                    seat.onMouseMove(x, y, event)
-                })
+            this.forEachAllSeats(seat => {
+                seat.onMouseMove(x, y, event)
             })
-            this.musicStands2D.forEach( musicStands => {
-                musicStands.forEach(musicStand => {
-                    musicStand.onMouseMove(x, y, event)
-                })
+            this.forEachAllMusicStands(musicStand => {
+                musicStand.onMouseMove(x, y, event)
             })
     
             this.areaDivider.onMouseMove(x, y, event)
@@ -410,15 +393,11 @@ class SeatsArranger {
         this.simplePartsList.forEach((simpleParts)=>{
             simpleParts.onMouseUp(x, y, event)
         })
-        this.seats2D.forEach( seats => {
-            seats.forEach(seat => {
-                seat.onMouseUp(x, y, event)
-            })
+        this.forEachAllSeats(seat => {
+            seat.onMouseUp(x, y, event)
         })
-        this.musicStands2D.forEach( musicStands => {
-            musicStands.forEach(musicStand => {
-                musicStand.onMouseUp(x, y, event)
-            })
+        this.forEachAllMusicStands(musicStand => {
+            musicStand.onMouseUp(x, y, event)
         })
 
         this.areaDivider.onMouseUp(x, y, event)
@@ -428,14 +407,12 @@ class SeatsArranger {
                this.selPos[1].x = x
                this.selPos[1].y = y
 
-                this.seats2D.forEach( seats => {
-                    seats.forEach(seat => {
-                        if (((this.selPos[0].x <= seat.x && seat.x <= this.selPos[1].x) || (this.selPos[1].x <= seat.x && seat.x <= this.selPos[0].x))
-                            && ((this.selPos[0].y <= seat.y && seat.y <= this.selPos[1].y) || (this.selPos[1].y <= seat.y && seat.y <= this.selPos[0].y))
-                        ) {
-                            seat.selected = true
-                        }
-                    })
+                this.forEachAllSeats(seat => {
+                    if (((this.selPos[0].x <= seat.x && seat.x <= this.selPos[1].x) || (this.selPos[1].x <= seat.x && seat.x <= this.selPos[0].x))
+                        && ((this.selPos[0].y <= seat.y && seat.y <= this.selPos[1].y) || (this.selPos[1].y <= seat.y && seat.y <= this.selPos[0].y))
+                    ) {
+                        seat.selected = true
+                    }
                 })
                 // 矩形選択領域に分割線の頂点のいずれかが含まれているなら選択状態にする
                 const [x1, y1, w, h] = getRectfrom2pts(this.selPos[0].x, this.selPos[0].y, this.selPos[1].x, this.selPos[1].y)
@@ -454,7 +431,7 @@ class SeatsArranger {
     }
 
     onKeyDown(event) {
-        console.log(`key:${event.key}, ctrl:${event.ctrlKey}`)
+        console.log(`onKeyDown: key:${event.key}, ctrl:${event.ctrlKey}`)
         switch (event.key) {
             case "1":
             case "2":
@@ -466,33 +443,75 @@ class SeatsArranger {
             case "8":
             case "9":
                 // 選択状態の座席のgroupIdを変更する
-                this.seats2D.forEach( seats => {
-                    seats.forEach(seat => {
-                        if (seat.selected === true) {
-                            seat.selected = false
-                            seat.groupId = Number(event.key)
-                        }
-                    })
+                this.forEachAllSeats(seat => {
+                    if (seat.selected === true) {
+                        seat.groupId = Number(event.key)
+                    }
                 })
-
                 this.seatUpdate("")
                 break
             case " ":
             case "Delete":
                     // 選択状態の座席を隠す
-                this.seats2D.forEach( seats => {
-                    seats.forEach(seat => {
-                        if (seat.selected === true) {
-                            seat.selected = false
-                            seat.hide()
-                        }
-                    })
+                this.forEachAllSeats( seat => {
+                    if (seat.selected === true) {
+                        seat.selected = false
+                        seat.setVisualState(Seat.VisualState.Hide)
+                    }
                 })
                 // 選択状態の分割線を削除する
                 this.areaDivider.deleteSelectedDivLines()
 
                 this.seatUpdate("")
                 break
+            case "h":
+                this.forEachAllSeats( seat => {
+                    if (seat.selected === true) {
+                        seat.setVisualState(Seat.VisualState.Hide)
+                    }
+                })
+                this.seatUpdate("")
+            break;
+                case "n":
+                this.forEachAllSeats( seat => {
+                    if (seat.selected === true) {
+                        seat.setVisualState(Seat.VisualState.Normal)
+                    }
+                })
+                this.seatUpdate("")
+                break;
+            case "b":
+                this.forEachAllSeats( seat => {
+                    if (seat.selected === true) {
+                        seat.setVisualState(Seat.VisualState.Black)
+                    }
+                })
+                this.seatUpdate("")
+                break;
+            case "r":
+                this.forEachAllSeats( seat => {
+                    if (seat.selected === true) {
+                        seat.setVisualState(Seat.VisualState.Red)
+                    }
+                })
+                this.seatUpdate("")
+                break;
+            case "B":
+            case "R":
+                this.forEachAllSeats( seat => {
+                    if (seat.selected === true) {
+                        seat.setVisualState(Seat.VisualState.RedAndBlack)
+                    }
+                })
+                break;
+            case "d":
+                this.forEachAllSeats( seat => {
+                    if (seat.selected === true) {
+                        seat.setVisualState(Seat.VisualState.DoubleCircle)
+                    }
+                })
+                this.seatUpdate("")
+                break;
             case "y":
                 if (event.ctrlKey) {
                     this.historyManager.redo()
@@ -503,13 +522,42 @@ class SeatsArranger {
                     this.historyManager.undo()
                 }
                 break
+            case "Escape":
+                this.clearSelectedStates()
+                break;
             default:
                 break
         }
+        this.prevKey = event.key
     }
 
     onKeyUp(event) {
-        // 今は何も使わない
+        console.log(`onKeyUp  : key:${event.key}, ctrl:${event.ctrlKey}`)
+        // if ((this.prevKey === "Escape" && event.key === "Escape")) {
+        // }
+        this.prevKey = ""
+    }
+
+    forEachAllSeats(func){
+        this.seats2D.forEach((seats,row) => {
+            seats.forEach((seat,col) => {func(seat,row,col,this.seats2D)})
+        })
+    }
+    forEachAllMusicStands(func){
+        this.musicStands2D.forEach( (musicStands,row) => {
+            musicStands.forEach((musicStand,col) => {func(musicStand,row,col,this.musicStands2D)})
+        })
+    }
+
+    clearSelectedStates(){
+        this.selecting = false
+
+        // 座席の選択状態をクリア
+        this.forEachAllSeats(seat => {
+            seat.selected = false
+        })
+        // 領域分割の選択状態を解除
+        this.areaDivider.cancelSelectedDivLines()
     }
 
     setCbLayerVisible(visible) {
@@ -589,16 +637,12 @@ class SeatsArranger {
         }
     
         // 座席の描画
-        this.seats2D.forEach( seats => {
-            seats.forEach(seat => {
-                seat.draw(ctx, this.printing)
-            })
+        this.forEachAllSeats(seat => {
+            seat.draw(ctx, this.printing)
         })
         // 譜面台の描画
-        this.musicStands2D.forEach( musicStands => {
-            musicStands.forEach(musicStand => {
-                musicStand.draw(ctx, this.printing)
-            })
+        this.forEachAllMusicStands(musicStand => {
+            musicStand.draw(ctx, this.printing)
         })
         // 指揮者は矩形描画だけのためここで直接書く
         this.drawTact(ctx, this.printing)
