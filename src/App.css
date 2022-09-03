@@ -7,11 +7,12 @@
 }
 
 table {
-  width: 1000px;
+  width: 1200px;
   margin-top: 40px;
   border: 1px solid #c1c1c1;
   border-spacing: 0;
-  border-collapse: collapse
+  border-collapse: collapse;
+  margin: 40px auto;
 }
 th,
 td {

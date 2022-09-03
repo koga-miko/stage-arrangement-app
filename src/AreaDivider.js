@@ -608,15 +608,15 @@ class AreaDivider {
     
     draw(ctx, printing = false) {
         // 背景の領域線は非印刷時のみ表示
-        if (!printing) {
-            ctx.beginPath()
-            ctx.setLineDash([])
-            ctx.fillStyle = "rgba(0,0,255,0.3)"
-            ctx.strokeStyle = "rgb(88, 89, 98)"
-            ctx.lineWidth = 2
-            ctx.strokeRect(this.rect.x,this.rect.y,this.rect.w,this.rect.h)
-            ctx.stroke()
-        }
+        // if (!printing) {
+        //     ctx.beginPath()
+        //     ctx.setLineDash([])
+        //     ctx.fillStyle = "rgba(0,0,255,0.3)"
+        //     ctx.strokeStyle = "rgb(88, 89, 98)"
+        //     ctx.lineWidth = 2
+        //     ctx.strokeRect(this.rect.x,this.rect.y,this.rect.w,this.rect.h)
+        //     ctx.stroke()
+        // }
 
         if (this.stt === this.StateKind.Dividing) {
             ctx.beginPath()

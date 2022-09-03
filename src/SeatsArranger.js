@@ -580,10 +580,10 @@ class SeatsArranger {
                 this.printingArea.y,
                 this.printingArea.w,
                 this.printingArea.h,
-                0,
-                0,
-                this.printingArea.w / this.printingArea.h > this.canvas.width / this.canvas.height ? this.printingArea.w * this.canvas.width / this.printingArea.w: this.printingArea.w * this.canvas.height / this.printingArea.h,
-                this.printingArea.w / this.printingArea.h > this.canvas.width / this.canvas.height ? this.printingArea.h * this.canvas.width / this.printingArea.w: this.printingArea.h * this.canvas.height / this.printingArea.h
+                this.printingArea.w / this.printingArea.h > this.canvas.width / this.canvas.height ? 0: (this.canvas.width - this.printingArea.w * this.canvas.height / this.printingArea.h) / 2,
+                this.printingArea.w / this.printingArea.h > this.canvas.width / this.canvas.height ? (this.canvas.height - this.printingArea.h * this.canvas.width / this.printingArea.w) / 2: 0,
+                this.printingArea.w / this.printingArea.h > this.canvas.width / this.canvas.height ? this.canvas.width: this.printingArea.w * this.canvas.height / this.printingArea.h,
+                this.printingArea.w / this.printingArea.h > this.canvas.width / this.canvas.height ? this.printingArea.h * this.canvas.width / this.printingArea.w: this.canvas.height
             )
             return
         }
