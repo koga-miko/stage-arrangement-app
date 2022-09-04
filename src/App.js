@@ -114,7 +114,6 @@ const App = () => {
   }
 
   const renderIdSelect = (idSelIdx) => {
-    //TODO:初期値を設定できるようにすること
     return (
       <div className="cp_ipselect cp_sl01">
         <select 
