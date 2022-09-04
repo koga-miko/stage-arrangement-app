@@ -115,15 +115,11 @@ const App = () => {
 
   const renderIdSelect = (idSelIdx) => {
     //TODO:初期値を設定できるようにすること
-    const defaultValue = {
-      label: selectedValues[idSelIdx]===0? '-': selectedValues[idSelIdx].toString(),
-      value: selectedValues[idSelIdx]===0? '': selectedValues[idSelIdx].toString()
-    }
     return (
       <div className="cp_ipselect cp_sl01">
         <select 
           onChange={(e) => handleSelectChange(e, idSelIdx)}
-          defaultValue={defaultValue}>
+          value={selectedValues[idSelIdx].toString()}>
             <option value="0">-</option>
             <option value="1">1</option>
             <option value="2">2</option>
